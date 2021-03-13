@@ -16,26 +16,26 @@ enum class Term {
 class Cube(val terms: List<Term>, val minTerms: List<Int>) {
     constructor(minTerm: Int, termCount: Int) : this(minTermToTerm(minTerm, termCount), listOf(minTerm))
     constructor(terms: List<Term>) : this(terms, termsToMinTerms(terms))
-}
 
-fun canJoin(cube1: Cube, cube2: Cube): Boolean {
-    if (cube1.terms.size != cube2.terms.size)
-        return false;
-    var diffFoundYet = false
-    for ((term1, term2) in cube1.terms.zip(cube2.terms)) {
-        if (term1 != term2) {
-            if (!diffFoundYet) diffFoundYet = false
-            else return false;
+    fun canJoin(cube: Cube): Boolean {
+        if (terms.size != cube.terms.size)
+            return false;
+        var diffFoundYet = false
+        for ((term1, term2) in terms.zip(cube.terms)) {
+            if (term1 != term2) {
+                if (!diffFoundYet) diffFoundYet = false
+                else return false;
+            }
         }
+        return diffFoundYet
     }
-    return diffFoundYet
-}
 
-// Precondition: canJoin cube1 and cube2
-fun joinCube(cube1: Cube, cube2: Cube): Cube {
-    val joinedTerms =
-        cube1.terms.zip(cube2.terms).map { (term1, term2) -> if (term1 == term2) term2 else Term.DontCare }
-    return Cube(joinedTerms)
+    // Precondition: canJoin cube1 and cube2
+    fun joinCube(cube: Cube): Cube {
+        val joinedTerms =
+            terms.zip(cube.terms).map { (term1, term2) -> if (term1 == term2) term2 else Term.DontCare }
+        return Cube(joinedTerms)
+    }
 }
 
 fun minTermToTerm(minTerm: Int, termCount: Int): List<Term> {
