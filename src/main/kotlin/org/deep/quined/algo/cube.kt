@@ -61,7 +61,7 @@ class Cube(private val terms: List<Term>, private val minTerms: List<Int>) {
 
 class CannotJoinCubeException : RuntimeException()
 
-fun minTermToTerm(minTerm: Int, termCount: Int): List<Term> {
+private fun minTermToTerm(minTerm: Int, termCount: Int): List<Term> {
     val terms = mutableListOf<Term>()
     var remaining = minTerm
     while (remaining > 0) {
@@ -76,7 +76,7 @@ fun minTermToTerm(minTerm: Int, termCount: Int): List<Term> {
 }
 
 
-fun termsToMinTerms(terms: List<Term>): MutableList<Int> {
+private fun termsToMinTerms(terms: List<Term>): MutableList<Int> {
     if (Term.DontCare !in terms) {
         return mutableListOf(termsToInt(terms))
     }
@@ -91,7 +91,7 @@ fun termsToMinTerms(terms: List<Term>): MutableList<Int> {
     return withZeroMinTerms
 }
 
-fun termsToInt(terms: List<Term>): Int {
+private fun termsToInt(terms: List<Term>): Int {
     var minTerm = 0
     for (term in terms) {
         minTerm *= 2
