@@ -15,7 +15,6 @@ enum class Term {
 
 class Cube(val terms: List<Term>, val minTerms: List<Int>) {
     constructor(minTerm: Int, termCount: Int) : this(minTermToTerm(minTerm, termCount), listOf(minTerm))
-    constructor(terms: List<Term>) : this(terms, termsToMinTerms(terms))
 
     val oneCount: Int
         get() = this.terms.count { it == Term.One }
@@ -40,7 +39,9 @@ class Cube(val terms: List<Term>, val minTerms: List<Int>) {
         if (!canJoin(other)) throw CannotJoinCubeException()
         val joinedTerms =
             terms.zip(other.terms).map { (term1, term2) -> if (term1 == term2) term2 else Term.DontCare }
-        return Cube(joinedTerms)
+        val joinedMinTerms = minTerms.toMutableList()
+        joinedMinTerms.addAll(other.minTerms)
+        return Cube(joinedTerms, joinedMinTerms)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -74,34 +75,3 @@ private fun minTermToTerm(minTerm: Int, termCount: Int): List<Term> {
     terms.reverse()
     return terms
 }
-
-
-private fun termsToMinTerms(terms: List<Term>): MutableList<Int> {
-    if (Term.DontCare !in terms) {
-        return mutableListOf(termsToInt(terms))
-    }
-    val dontCareIdx = terms.indexOf(Term.DontCare)
-    val withOne = terms.toMutableList()
-    val withZero = terms.toMutableList()
-    withOne[dontCareIdx] = Term.One
-    withZero[dontCareIdx] = Term.Zero
-    val withOneMinTerms = termsToMinTerms(withOne)
-    val withZeroMinTerms = termsToMinTerms(withZero)
-    withZeroMinTerms.addAll(withOneMinTerms)
-    return withZeroMinTerms
-}
-
-private fun termsToInt(terms: List<Term>): Int {
-    var minTerm = 0
-    for (term in terms) {
-        minTerm *= 2
-        minTerm += when (term) {
-            Term.Zero -> 0
-            Term.One -> 1
-            Term.DontCare -> throw NonMinTermCubeException()
-        }
-    }
-    return minTerm
-}
-
-class NonMinTermCubeException : RuntimeException()
