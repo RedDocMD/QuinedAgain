@@ -1,4 +1,4 @@
-package org.deep.quined
+package org.deep.quined.algo
 
 import java.lang.RuntimeException
 
@@ -16,6 +16,12 @@ enum class Term {
 class Cube(private val terms: List<Term>, private val minTerms: List<Int>) {
     constructor(minTerm: Int, termCount: Int) : this(minTermToTerm(minTerm, termCount), listOf(minTerm))
     constructor(terms: List<Term>) : this(terms, termsToMinTerms(terms))
+
+    val oneCount: Int
+        get() = this.terms.count() { it == Term.One }
+
+    val termCount: Int
+        get() = this.terms.size
 
     fun canJoin(other: Cube): Boolean {
         if (terms.size != other.terms.size)
