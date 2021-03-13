@@ -13,24 +13,24 @@ enum class Term {
         }
 }
 
-class Cube(private val terms: List<Term>, private val minTerms: List<Int>) {
+class Cube(val terms: List<Term>, val minTerms: List<Int>) {
     constructor(minTerm: Int, termCount: Int) : this(minTermToTerm(minTerm, termCount), listOf(minTerm))
     constructor(terms: List<Term>) : this(terms, termsToMinTerms(terms))
 
     val oneCount: Int
-        get() = this.terms.count() { it == Term.One }
+        get() = this.terms.count { it == Term.One }
 
-    val termCount: Int
-        get() = this.terms.size
+    val dcCount: Int
+        get() = this.terms.count { it == Term.DontCare }
 
     fun canJoin(other: Cube): Boolean {
         if (terms.size != other.terms.size)
-            return false;
+            return false
         var diffFoundYet = false
         for ((term1, term2) in terms.zip(other.terms)) {
             if (term1 != term2) {
-                if (!diffFoundYet) diffFoundYet = false
-                else return false;
+                if (!diffFoundYet) diffFoundYet = true
+                else return false
             }
         }
         return diffFoundYet
