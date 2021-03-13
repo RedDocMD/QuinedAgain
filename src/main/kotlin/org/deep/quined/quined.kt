@@ -15,11 +15,11 @@ enum class Term {
 }
 
 class Cube(val terms: List<Term>, val minTerms: List<Int>) {
-    constructor(minTerm: Int) : this(minTermToTerm(minTerm), listOf(minTerm))
+    constructor(minTerm: Int, termCount: Int) : this(minTermToTerm(minTerm, termCount), listOf(minTerm))
     constructor(terms: List<Term>) : this(terms, termsToMinTerms(terms))
 }
 
-fun minTermToTerm(minTerm: Int): List<Term> {
+fun minTermToTerm(minTerm: Int, termCount: Int): List<Term> {
     val terms = mutableListOf<Term>()
     var remaining = minTerm
     while (remaining > 0) {
@@ -27,6 +27,8 @@ fun minTermToTerm(minTerm: Int): List<Term> {
         terms.add(if (rem == 0) Term.Zero else Term.One)
         remaining /= 2
     }
+    val padding =  List(termCount - terms.size) {Term.Zero}
+    terms.addAll(padding)
     terms.reverse()
     return terms
 }
