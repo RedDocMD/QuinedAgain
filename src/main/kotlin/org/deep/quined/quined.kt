@@ -13,15 +13,15 @@ enum class Term {
         }
 }
 
-class Cube(val terms: List<Term>, val minTerms: List<Int>) {
+class Cube(private val terms: List<Term>, private val minTerms: List<Int>) {
     constructor(minTerm: Int, termCount: Int) : this(minTermToTerm(minTerm, termCount), listOf(minTerm))
     constructor(terms: List<Term>) : this(terms, termsToMinTerms(terms))
 
-    fun canJoin(cube: Cube): Boolean {
-        if (terms.size != cube.terms.size)
+    fun canJoin(other: Cube): Boolean {
+        if (terms.size != other.terms.size)
             return false;
         var diffFoundYet = false
-        for ((term1, term2) in terms.zip(cube.terms)) {
+        for ((term1, term2) in terms.zip(other.terms)) {
             if (term1 != term2) {
                 if (!diffFoundYet) diffFoundYet = false
                 else return false;
@@ -30,13 +30,15 @@ class Cube(val terms: List<Term>, val minTerms: List<Int>) {
         return diffFoundYet
     }
 
-    // Precondition: canJoin cube1 and cube2
-    fun joinCube(cube: Cube): Cube {
+    fun joinCube(other: Cube): Cube {
+        if (!canJoin(other)) throw CannotJoinCubeException()
         val joinedTerms =
-            terms.zip(cube.terms).map { (term1, term2) -> if (term1 == term2) term2 else Term.DontCare }
+            terms.zip(other.terms).map { (term1, term2) -> if (term1 == term2) term2 else Term.DontCare }
         return Cube(joinedTerms)
     }
 }
+
+class CannotJoinCubeException : RuntimeException()
 
 fun minTermToTerm(minTerm: Int, termCount: Int): List<Term> {
     val terms = mutableListOf<Term>()
