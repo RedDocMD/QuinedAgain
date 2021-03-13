@@ -42,6 +42,21 @@ class Cube(private val terms: List<Term>, private val minTerms: List<Int>) {
             terms.zip(other.terms).map { (term1, term2) -> if (term1 == term2) term2 else Term.DontCare }
         return Cube(joinedTerms)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Cube
+
+        if (terms != other.terms) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return terms.hashCode()
+    }
 }
 
 class CannotJoinCubeException : RuntimeException()
