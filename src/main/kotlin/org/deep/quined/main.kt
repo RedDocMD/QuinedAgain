@@ -17,10 +17,10 @@ fun main(args: Array<String>) {
     val dontCares = if (line == "none") listOf() else line.split(" ").map { Cube(Integer.parseInt(it), termCount) }
     val allCubes = minTerms.toMutableList()
     allCubes.addAll(dontCares)
-    doQuineMcClusky(allCubes, termCount)
+    doQuineMcClusky(allCubes, termCount, minTerms)
 }
 
-fun doQuineMcClusky(initCubes: List<Cube>, termCount: Int) {
+fun doQuineMcClusky(initCubes: List<Cube>, termCount: Int, usefulCubes: List<Cube>) {
     var partitions = partitionCubesByOneCount(initCubes)
     val primeImplicants = mutableListOf<Cube>()
     while (true) {
@@ -31,6 +31,17 @@ fun doQuineMcClusky(initCubes: List<Cube>, termCount: Int) {
         println("")
         if (nextCubes.isEmpty()) break
         partitions = partitionCubesByOneCount(nextCubes)
+    }
+    val distinctPrimeImplicants = primeImplicants.distinct()
+    val primeImplicantStrings = distinctPrimeImplicants.map { cube -> cube.minTerms.joinToString { it.toString() } }
+    val maxWidth = primeImplicantStrings.maxOf { it.length }
+    val paddingString = "".padStart(maxWidth)
+    val allCubes = usefulCubes.joinToString(" | ") { cube -> "%3s".format(cube.minTerms[0].toString()) }
+    println("$paddingString | $allCubes")
+    for ((idx, primeImplicant) in distinctPrimeImplicants.withIndex()) {
+        val implicantString = "%${maxWidth}s".format(primeImplicantStrings[idx])
+        val cubeString = usefulCubes.joinToString(" | ") { if (it.minTerms[0] in primeImplicant.minTerms) " ✓ " else "   " }
+        println("$implicantString | $cubeString")
     }
 }
 
