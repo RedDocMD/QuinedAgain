@@ -18,10 +18,10 @@ fun main(args: Array<String>) {
     val dontCares = if (line == "none") listOf() else line.split(" ").map { Cube(Integer.parseInt(it), termCount) }
     val allCubes = minTerms.toMutableList()
     allCubes.addAll(dontCares)
-    doQuineMcClusky(allCubes, termCount, minTerms)
+    doQuineMcClusky(allCubes, termCount, minTerms, dontCares)
 }
 
-fun doQuineMcClusky(initCubes: List<Cube>, termCount: Int, usefulCubes: List<Cube>) {
+fun doQuineMcClusky(initCubes: List<Cube>, termCount: Int, usefulCubes: List<Cube>, dontCares: List<Cube>) {
     var partitions = partitionCubesByOneCount(initCubes)
     val primeImplicants = mutableListOf<Cube>()
     while (true) {
@@ -47,7 +47,8 @@ fun doQuineMcClusky(initCubes: List<Cube>, termCount: Int, usefulCubes: List<Cub
         println("$implicantString | $cubeString")
     }
 
-    val minCovers = findMinCovers(distinctPrimeImplicants, usefulCubes.map { it.minTerms[0] })
+    val minCovers =
+        findMinCovers(distinctPrimeImplicants, usefulCubes.map { it.minTerms[0] }, dontCares.map { it.minTerms[0] })
     println("\nMin-covers:")
     for (cover in minCovers) println("$cover")
 }

@@ -65,8 +65,9 @@ class Cover(private val cubes: List<Cube>) : Comparable<Cover> {
         }
 }
 
-fun findMinCovers(implicants: List<Cube>, minTerms: List<Int>): List<Cover> {
+fun findMinCovers(implicants: List<Cube>, minTerms: List<Int>, dcTerms: List<Int>): List<Cover> {
     val minTermsSet = minTerms.toSet()
+    val dcTermSet = dcTerms.toSet()
     val allPossibleCovers = 1 shl implicants.size
     val validCovers = mutableListOf<Cover>()
     for (i in 0 until allPossibleCovers) {
@@ -74,7 +75,7 @@ fun findMinCovers(implicants: List<Cube>, minTerms: List<Int>): List<Cover> {
         for ((idx, cube) in implicants.withIndex())
             if ((1 shl idx).and(i) != 0) implicantsSelected.add(cube)
         val cover = Cover(implicantsSelected)
-        if (cover.termsCovered == minTermsSet)
+        if (cover.termsCovered.subtract(dcTermSet) == minTermsSet)
             validCovers.add(cover)
     }
     validCovers.sort()
