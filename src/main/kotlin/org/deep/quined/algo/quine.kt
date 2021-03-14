@@ -18,7 +18,7 @@ fun reduceOneStep(partitionedCubes: Map<Int, List<Cube>>, termCount: Int): Reduc
             cubesCovered[cube] = false
         }
     }
-    for (i in 1 until termCount) {
+    for (i in 0 until termCount) {
         val lowerList = partitionedCubes[i]
         val higherList = partitionedCubes[i + 1]
         if (lowerList != null && higherList != null) {
