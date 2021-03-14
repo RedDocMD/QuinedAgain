@@ -1,6 +1,7 @@
 package org.deep.quined
 
 import org.deep.quined.algo.Cube
+import org.deep.quined.algo.findMinCovers
 import org.deep.quined.algo.partitionCubesByOneCount
 import org.deep.quined.algo.reduceOneStep
 import java.io.BufferedReader
@@ -33,6 +34,7 @@ fun doQuineMcClusky(initCubes: List<Cube>, termCount: Int, usefulCubes: List<Cub
         partitions = partitionCubesByOneCount(nextCubes)
     }
     val distinctPrimeImplicants = primeImplicants.distinct()
+
     val primeImplicantStrings = distinctPrimeImplicants.map { cube -> cube.minTerms.joinToString { it.toString() } }
     val maxWidth = primeImplicantStrings.maxOf { it.length }
     val paddingString = "".padStart(maxWidth)
@@ -40,9 +42,14 @@ fun doQuineMcClusky(initCubes: List<Cube>, termCount: Int, usefulCubes: List<Cub
     println("$paddingString | $allCubes")
     for ((idx, primeImplicant) in distinctPrimeImplicants.withIndex()) {
         val implicantString = "%${maxWidth}s".format(primeImplicantStrings[idx])
-        val cubeString = usefulCubes.joinToString(" | ") { if (it.minTerms[0] in primeImplicant.minTerms) " ✓ " else "   " }
+        val cubeString =
+            usefulCubes.joinToString(" | ") { if (it.minTerms[0] in primeImplicant.minTerms) " ✓ " else "   " }
         println("$implicantString | $cubeString")
     }
+
+    val minCovers = findMinCovers(distinctPrimeImplicants, usefulCubes.map { it.minTerms[0] })
+    println("\nMin-covers:")
+    for (cover in minCovers) println("$cover")
 }
 
 fun printPartitions(parts: Map<Int, List<Cube>>, leftovers: List<Cube>) {
